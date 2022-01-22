@@ -8,7 +8,7 @@ OUT := $(addsuffix .out, $(basename $(IN)))
 all: $(OUT)
 
 clean:
-	rm -f $(OUT)
+	LOCAL="true" rm -f $(OUT)
 
 
 %.out: %.tmp

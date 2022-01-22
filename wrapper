@@ -4,24 +4,37 @@ logs="logs"
 
 
 cmd=${2}
+
+# Local execution when requested.
+if $(echo ${cmd} | grep -q "^LOCAL="); then
+  eval ${cmd}
+  exit
+fi
+
+# Separate sbatch parameters from command.
+override=""
 if $(echo ${cmd} | grep -q "^SBATCH="); then
   override=$(echo ${cmd} | cut -f 2 -d '"')
   cmd=$(echo ${cmd} | cut -f 3- -d '"')
 fi
 
-declare -A args
+# Apply sbatch parameters.
+declare -A args=()
 for item in ${SBATCH} ${override}; do
   key=$(echo ${item} | cut -f 1 -d '=')
   val=$(echo ${item} | cut -f 2 -d '=')
   args[${key}]=${val}
 done
 
+# Build sbatch parameter block.
+sbatch=""
 for key in ${!args[*]}; do
   sbatch=$(echo -e "#SBATCH ${key}=${args[${key}]}\n${sbatch}")
 done
 
 mkdir -p ${logs}
 
+# Execute sbatch.
 cat << EOF | sbatch --wait
 #!/bin/bash
 #SBATCH --output=${logs}/%j.out

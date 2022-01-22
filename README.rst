@@ -19,6 +19,9 @@ Alternatively, this can be set in the ``Makefile`` itself.
 
     SHELL := ./wrapper
 
+Job parameters
+~~~~~~~~~~~~~~~
+
 The ``SBATCH`` environment variable can be used for setting default sbatch_
 options.
 
@@ -37,6 +40,16 @@ Defaults can be overridden per rule using the ``SBATCH`` variable.
 .. code-block:: make
 
     SBATCH="--mem=2G" mycommand
+
+Local rules
+~~~~~~~~~~~
+
+Rules that start with a definition of the ``LOCAL`` variable are executed
+locally.
+
+.. code-block:: make
+
+    LOCAL="true" mycommand
 
 
 .. _Slurm: https://slurm.schedmd.com/
